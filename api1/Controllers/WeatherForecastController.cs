@@ -26,8 +26,12 @@ namespace api1.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [Route("/")]
+        public string Get()
         {
+
+
+            string retornoEnvio = string.Empty;
 
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using(var connection = factory.CreateConnection())
@@ -46,18 +50,12 @@ namespace api1.Controllers
                                     routingKey: "hello",
                                     basicProperties: null,
                                     body: body);
-                Console.WriteLine(" [x] Sent {0}", message);
+
+                retornoEnvio = $" Enviado {message}";
             }
 
 
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return retornoEnvio;
         }
     }
 }

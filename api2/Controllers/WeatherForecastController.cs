@@ -45,14 +45,13 @@ namespace api2.Controllers
                 {
                     var body = ea.Body.ToArray();
                     message = Encoding.UTF8.GetString(body);
-                    Console.WriteLine(" [x] Received {0}", message);
                 };
                 channel.BasicConsume(queue: "hello",
                                     autoAck: true,
                                     consumer: consumer);
             }
                                     
-            return message;
+            return $" ---  Received: {message} ---";
         }
 
         [HttpGet]
