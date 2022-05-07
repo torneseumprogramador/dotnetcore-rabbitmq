@@ -32,23 +32,25 @@ namespace api2.Controllers
             var message = string.Empty;
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using(var connection = factory.CreateConnection())
-            using(var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "hello",
-                                    durable: false,
-                                    exclusive: false,
-                                    autoDelete: false,
-                                    arguments: null);
-
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                using(var channel = connection.CreateModel())
                 {
-                    var body = ea.Body.ToArray();
-                    message = Encoding.UTF8.GetString(body);
-                };
-                channel.BasicConsume(queue: "hello",
-                                    autoAck: true,
-                                    consumer: consumer);
+                    channel.QueueDeclare(queue: "hello",
+                                        durable: false,
+                                        exclusive: false,
+                                        autoDelete: false,
+                                        arguments: null);
+
+                    var consumer = new EventingBasicConsumer(channel);
+                    consumer.Received += (model, ea) =>
+                    {
+                        var body = ea.Body.ToArray();
+                        message = Encoding.UTF8.GetString(body);
+                    };
+                    channel.BasicConsume(queue: "hello",
+                                        autoAck: true,
+                                        consumer: consumer);
+                }
             }
                                     
             return $" ---  Received: {message} ---";
